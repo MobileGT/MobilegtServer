@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<div style="margin:5px 0;">
+	<a href="#" class="easyui-linkbutton" >启动</a>
+	<a href="#" class="easyui-linkbutton" >停止</a>
+	<a href="#" class="easyui-linkbutton" >删除</a>
+</div>
+<div style="margin:5px 0;">
+	<form name="statisticsForm" action="getStatistics">
+		<input id="date" name="date" class="easyui-datetimebox" data-options="prompt:'开始时间'" style="width:180px;">
+		<input id="date" name="date" class="easyui-datetimebox" data-options="prompt:'结束时间'" style="width:180px;">
+		状态：<select class="easyui-combobox" name="language" style="width:180px;">
+			<option value="全部">全部</option>
+			<option value="运行成功">运行成功</option>
+			<option value="运行失败">运行失败</option>
+			<option value="正在运行">正在运行</option>
+			<option value="停止">停止</option>
+			<option value="已删除">已删除</option>
+		</select>
+		<input class="easyui-textbox" data-options="prompt:'内容'" style="width:180px"></input>
+		<a href="#" class="easyui-linkbutton" >查询</a>
+	</form>
+</div>
+<table id="dg" class="easyui-datagrid" style="width:100%;height:250px"
+			data-options="rownumbers:true,singleSelect:false,autoRowHeight:true,
+				pagination:true,url:'datagrid_data1.json',method:'get'">
+		<thead>
+			<tr>
+				<th data-options="field:'ck',checkbox:true"></th>
+				<th data-options="field:'itemid',width:80">进程名</th>
+				<th data-options="field:'productid',width:100">开始运行时间</th>
+				<th data-options="field:'listprice',width:80,align:'right'">数据时间</th>
+				<th data-options="field:'unitcost',width:80,align:'right'">已运行时间</th>
+				<th data-options="field:'status',width:60,align:'center'">运行状态</th>
+			</tr>
+		</thead>
+</table>
+<div id="p" class="easyui-panel" title="脚本日志" style="width:100%;height:200px;padding:10px;"
+	data-options="
+		tools:[{
+		iconCls:'icon-reload',
+		handler:function(){
+		$('#p').panel('refresh', './test2.html');
+		}
+	}]
+	">
+</div>
+</body>
+</html>

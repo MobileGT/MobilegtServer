@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="
+    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.1.xsd
+    ">
+    <!-- 扫描code.java.dao包下所有标注@Repository的DAO组件 -->
+    <context:component-scan base-package="code.java.dao**"/>
+    <bean id="propertyConfigurer"
+          class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="location" value="classpath:hibernate.properties"/>
+    </bean>
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+          destroy-method="close"
+          p:driverClass="${jdbc.driverClass}"
+          p:jdbcUrl="${jdbc.url}"
+          p:user="${jdbc.username}"
+          p:password="${jdbc.password}"/>
+
+    <bean id="sessionFactory"
+          class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="packagesToScan" value="code.java.pojo"/>
+        <!-- 配置C3p0连接池 -->
+        <property name="hibernateProperties">
+            <props>
+              <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+              <!-- 设置自动创建|更新|验证数据库表结构 -->
+              <prop key="hibernate.hbm2ddl.auto">update</prop>
+			  <!-- 是否在控制台显示sql -->
+			  <prop key="hibernate.show_sql">true</prop>
+			  <!-- 是否格式化sql，优化显示 --><prop key="hibernate.format_sql">true</prop>
+			  
+			  
+              <!-- 开启二级缓存 -->  
+		      <prop key="hibernate.cache.use_second_level_cache">true</prop>  
+		      <!-- 启动"查询缓存"如果想缓存使用findall()、list()、Iterator()、createCriteria()、createQuery()等方法获得的数据结果集,必须配置此项-->  
+		      <prop key="hibernate.cache.use_query_cache">true</prop>  
+		      <!-- 设置二级缓存插件EHCache的Provider类-->  
+		      <prop key="hibernate.cache.provider_class">net.sf.ehcache.hibernate.EhCacheProvider</prop>
+		      <!-- 二级缓存区域名的前缀 -->  
+		      <!--<prop key="hibernate.cache.region_prefix">test</prop>-->  
+		      
+		      
+		      <!-- Hibernate4以后都封装到org.hibernate.cache.ehcache.EhCacheRegionFactory -->
+		      <!-- 高速缓存提供程序 -->  
+		      <prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</prop>  
+		     
+		      <!-- 指定缓存配置文件位置 -->  
+		      <!-- <prop key="hibernate.cache.provider_configuration_file_resource_path">ehcache.xml</prop>   -->
+		      <!-- 强制Hibernate以更人性化的格式将数据存入二级缓存 -->  
+		      <prop key="hibernate.cache.use_structured_entries">true</prop>  
+		  
+		      <!-- Hibernate将收集有助于性能调节的统计数据 -->  
+		      <prop key="hibernate.generate_statistics">true</prop>
+		      
+		      <!-- 数据库批量查询最大数 --><prop key="hibernate.jdbc.fetch_size">50</prop>
+              <!-- 数据库批量更新、添加、删除操作最大数 -->
+              <prop key="hibernate.jdbc.batch_size">50</prop>
+              <!-- 是否自动提交事务 -->
+              <prop key="hibernate.connection.autocommit">true</prop>
+              <!-- 指定hibernate在何时释放JDBC连接 -->
+              <prop key="hibernate.connection.release_mode">auto</prop>  
+		      <!-- 创建session方式 hibernate4.x 的方式 -->
+		      <prop key="hibernate.current_session_context_class">org.springframework.orm.hibernate4.SpringSessionContext</prop>
+		      <!-- javax.persistence.validation.mode默认情况下是auto的，就是说如果不设置的话它是会自动去你的classpath下面找一个bean-validation**包,所以把它设置为none即可 -->
+			  <prop key="javax.persistence.validation.mode">none</prop> 
+            </props>
+        </property>
+    </bean>
+	
+	<!-- Hibernate 数据源的事务管理 -->
+    <bean id="transactionManager"
+          class="org.springframework.orm.hibernate4.HibernateTransactionManager"
+          p:sessionFactory-ref="sessionFactory" />
+</beans>
